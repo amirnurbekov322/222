@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Электрондық оқу құралы — Кітап форматы</title>
+  <title>Электрондық оқу құралы — Анимацияланған кітап</title>
   <style>
     body {
-      background: #334155;
+      background: #1e293b;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
@@ -19,23 +19,20 @@
     h1 {
       color: #f8fafc;
       font-size: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       text-align: center;
     }
-    /* Кітап контейнері */
+    /* Кітап мұқабасы мен контейнері */
     .book-container {
-      perspective: 1500px;
-    }
-    .book {
-      width: 800px;
-      height: 520px;
-      background: #f8fafc;
-      border-radius: 8px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-      display: flex;
       position: relative;
-      overflow: hidden;
+      width: 840px;
+      height: 520px;
+      background: #fdfdfd;
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      display: flex;
       border: 1px solid #cbd5e1;
+      overflow: hidden;
     }
     .page {
       width: 50%;
@@ -43,81 +40,80 @@
       padding: 40px;
       box-sizing: border-box;
       overflow-y: auto;
-      position: absolute;
-      top: 0;
-      transition: transform 0.6s ease-in-out;
       background: #ffffff;
+      transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
     }
     .page-left {
-      left: 0;
       border-right: 1px solid #e2e8f0;
-      box-shadow: inset -10px 0 15px -10px rgba(0,0,0,0.05);
+      box-shadow: inset -15px 0 20px -15px rgba(0,0,0,0.06);
     }
     .page-right {
-      right: 0;
-      background: #fdfdfd;
+      background: #fafafa;
     }
-    h2 { font-size: 18px; color: #1e40af; margin-bottom: 12px; }
+    
+    /* Бет ауысқан кездегі анимация класы */
+    .fade-anim {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    h2 { font-size: 17px; color: #1e40af; margin-bottom: 12px; }
     p, li { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
     ul, ol { margin-left: 20px; }
     pre { background: #0f172a; color: #e2e8f0; padding: 10px; border-radius: 6px; font-size: 12px; }
     code { color: #db2777; background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
     pre code { color: #e2e8f0; background: transparent; }
     
-    /* Батырмалар */
+    /* Батырмалар мен санауыш */
     .controls {
       margin-top: 20px;
       display: flex;
       gap: 15px;
     }
     .btn {
-      background: #2563eb;
+      background: #3b82f6;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 22px;
       font-size: 14px;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
-    .btn:hover { background: #1d4ed8; }
-    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn:hover { background: #2563eb; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { background: #64748b; cursor: not-allowed; opacity: 0.6; }
     .page-counter {
-      color: #cbd5e1;
+      color: #94a3b8;
       font-size: 14px;
       margin-top: 10px;
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
 
-  <h1>Веб-программирование — Электронды кітап (ОӘК)</h1>
+  <h1>Web Programming — Электронды оқу құралы (УМКД)</h1>
 
   <div class="book-container">
-    <div class="book">
-      <div class="page page-left" id="left-page">
-        <!-- Сол жақ бет мазмұны -->
-      </div>
-      <div class="page page-right" id="right-page">
-        <!-- Оң жақ бет мазмұны -->
-      </div>
-    </div>
+    <div class="page page-left" id="left-page"></div>
+    <div class="page page-right" id="right-page"></div>
   </div>
 
   <div class="controls">
-    <button class="btn" id="prev-btn" onclick="prevPage()">← Алдыңғы бет</button>
-    <button class="btn" id="next-btn" onclick="nextPage()">Келесі бет →</button>
+    <button class="btn" id="prev-btn" onclick="prevPage()">← Алдыңғы</button>
+    <button class="btn" id="next-btn" onclick="nextPage()">Келесі →</button>
   </div>
-  <div class="page-counter" id="counter">Бет: 1 / 30</div>
+  <div class="page-counter" id="counter">Беттер: 1-2 / 30</div>
 
   <script src="lectures.js"></script>
   <script src="srsp.js"></script>
   <script>
-    // Барлық мазмұнды біріктіреміз: 15 лекция + 15 СРСП = 30 беттік кітап
     const bookPages = [];
     
+    // 15 Лекцияны қосу
     window.LECTURES_DATA.forEach((item, index) => {
       bookPages.push({
         title: `Дәріс №${index + 1}: ${item.title}`,
@@ -126,6 +122,7 @@
       });
     });
 
+    // 15 СРСП тапсырмасын қосу
     window.SRSP_DATA.forEach((item, index) => {
       bookPages.push({
         title: `СРСП Тапсырмасы №${index + 1}: ${item.title}`,
@@ -134,46 +131,61 @@
       });
     });
 
-    let currentPage = 0; // Жұп индекс (сол жақ бет)
+    let currentPage = 0;
 
-    function renderBook() {
-      const leftPage = bookPages[currentPage] || { title: "Аяғы", html: "<p>Кітап соңы.</p>", source: "" };
-      const rightPage = bookPages[currentPage + 1] || { title: "Мұқаба", html: "<p>Оқу құралының соңы.</p>", source: "" };
+    function renderBook(withAnimation = true) {
+      const leftEl = document.getElementById('left-page');
+      const rightEl = document.getElementById('right-page');
 
-      document.getElementById('left-page').innerHTML = `
-        <h2>${leftPage.title}</h2>
-        <div>${leftPage.html}</div>
-        <p style="font-size:11px; color:#64748b; margin-top:15px;">Дереккөз: ${leftPage.source || ''}</p>
-      `;
+      if (withAnimation) {
+        leftEl.classList.add('fade-anim');
+        rightEl.classList.add('fade-anim');
+      }
 
-      document.getElementById('right-page').innerHTML = `
-        <h2>${rightPage.title}</h2>
-        <div>${rightPage.html}</div>
-        <p style="font-size:11px; color:#64748b; margin-top:15px;">Дереккөз: ${rightPage.source || ''}</p>
-      `;
+      setTimeout(() => {
+        const leftPage = bookPages[currentPage] || { title: "Аяғы", html: "<p>Кітап соңы.</p>", source: "" };
+        const rightPage = bookPages[currentPage + 1] || { title: "Мұқаба", html: "<p>Оқу құралының соңы.</p>", source: "" };
 
-      document.getElementById('prev-btn').disabled = currentPage === 0;
-      document.getElementById('next-btn').disabled = currentPage >= bookPages.length - 2;
-      
-      let currentNum = Math.min(currentPage + 2, bookPages.length);
-      document.getElementById('counter').textContent = `Беттер: ${currentNum} / ${bookPages.length}`;
+        leftEl.innerHTML = `
+          <h2>${leftPage.title}</h2>
+          <div>${leftPage.html}</div>
+          <p style="font-size:11px; color:#64748b; margin-top:15px;">Дереккөз: ${leftPage.source || ''}</p>
+        `;
+
+        rightEl.innerHTML = `
+          <h2>${rightPage.title}</h2>
+          <div>${rightPage.html}</div>
+          <p style="font-size:11px; color:#64748b; margin-top:15px;">Дереккөз: ${rightPage.source || ''}</p>
+        `;
+
+        document.getElementById('prev-btn').disabled = currentPage === 0;
+        document.getElementById('next-btn').disabled = currentPage >= bookPages.length - 2;
+        
+        let currentNum = Math.min(currentPage + 2, bookPages.length);
+        document.getElementById('counter').textContent = `Беттер: ${Math.min(currentPage + 1, bookPages.length)} мен ${currentNum} / ${bookPages.length}`;
+
+        if (withAnimation) {
+          leftEl.classList.remove('fade-anim');
+          rightEl.classList.remove('fade-anim');
+        }
+      }, 200);
     }
 
     function nextPage() {
       if (currentPage < bookPages.length - 2) {
         currentPage += 2;
-        renderBook();
+        renderBook(true);
       }
     }
 
     function prevPage() {
       if (currentPage > 0) {
         currentPage -= 2;
-        renderBook();
+        renderBook(true);
       }
     }
 
-    window.onload = () => renderBook();
+    window.onload = () => renderBook(false);
   </script>
 </body>
 </html>
